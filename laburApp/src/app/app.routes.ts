@@ -1,3 +1,6 @@
-import { Routes } from '@angular/router';
+import { Routes } from "@angular/router";
+import { AddResourceComponent } from "./components/add-service/add-service.component";
 
-export const routes: Routes = [];
+export const appRoutes: Routes = [
+  { path: "addResource", component: AddResourceComponent },
+];
