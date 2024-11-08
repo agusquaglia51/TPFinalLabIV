@@ -5,7 +5,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import { Service } from "../../models/service";
 import { LocationAsyncService } from "../../services/location-async.service";
 import { CommonModule } from "@angular/common";
 import { IDepartment } from "../../interfaces/department";
@@ -14,6 +13,8 @@ import { IProvince } from "../../interfaces/province";
 import { CategoriesService } from "../../services/categorie-async.service";
 import { ServicesService } from "../../services/service-async.service";
 import { AuthService } from "../../services/auth.services";
+import { ICategory } from "../../interfaces/category.interface";
+import { IService } from "../../interfaces/service.interface";
 
 @Component({
   selector: "app-add-service",
@@ -27,16 +28,16 @@ export class AddServiceComponent implements OnInit {
   departmentList: Array<IDepartment> = [];
   localityList: Array<ILocality> = [];
   mainCategoryList: string[] = [
-    "Reparación y mantenimiento",
-    "Servicios de limpieza",
-    "Servicios de jardinería y paisajismo",
+    // "Reparación y mantenimiento",
+    // "Servicios de limpieza",
+    // "Servicios de jardinería y paisajismo",
   ];
   subCategoryList: string[] = [
-    "Limpieza de hogares",
-    "Limpieza de oficinas",
-    "Limpieza de ventanas",
-    "Limpieza de alfombras",
-    "Servicios de desinfección",
+    // "Limpieza de hogares",
+    // "Limpieza de oficinas",
+    // "Limpieza de ventanas",
+    // "Limpieza de alfombras",
+    // "Servicios de desinfección",
   ];
 
   resourceForm = new FormGroup({
@@ -61,11 +62,15 @@ export class AddServiceComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(
-      "🚀 ~ AddServiceComponent ~ ngOnInit ~ this.authService.isAuthenticated():",
-      this.authService.isAuthenticated()
-    );
     if (this.authService.isAuthenticated()) {
+      this.categoriesService
+        .getCategories()
+        .then((response) => {
+          console.log(response);
+          this.mainCategoryList = response;
+        })
+        .catch((error) => console.log(JSON.stringify(error)));
+
       this.locationService
         .getAllProvinces()
         .then((response) => {
@@ -75,6 +80,7 @@ export class AddServiceComponent implements OnInit {
         .catch((error) => {
           console.log(JSON.stringify(error));
         });
+
       this.categoriesService
         .getCategories()
         .then((response) => {
@@ -114,6 +120,16 @@ export class AddServiceComponent implements OnInit {
       });
   }
 
+  loadSubCategoryList(categoryId: number) {
+    this.categoriesService
+      .getSubCategories(categoryId)
+      .then((response) => {
+        console.log(response);
+        this.subCategoryList = response;
+      })
+      .catch((error) => console.log(JSON.stringify(error)));
+  }
+
   onSelectedProvince() {
     this.departmentList = []; // Limpia los departamentos al cambiar la provincia
     this.localityList = []; // Limpia las localidades al cambiar la provincia
@@ -131,13 +147,32 @@ export class AddServiceComponent implements OnInit {
     this.loadLocalities(department.nombre);
   }
 
+  onSelectedCategory() {
+    this.subCategoryList = [];
+    const category = new Object(
+      this.resourceForm.getRawValue().selectedCategory
+    ) as ICategory;
+    this.loadSubCategoryList(category.id);
+  }
+
   onSubmit() {
-    let service = new Service();
+    let service: IService = {
+      id: "",
+      description: "",
+      mainCategory: 0,
+      secondaryCategory: 0,
+      state: "",
+      department: "",
+      locality: "",
+      profesionalId: "",
+    };
     const description = this.resourceForm.getRawValue().description as string;
-    const mainCategory = this.resourceForm.getRawValue()
-      .selectedCategory as string;
-    const secondaryCategory = this.resourceForm.getRawValue()
-      .selectedSubCategory as string;
+    const mainCategory = new Object(
+      this.resourceForm.getRawValue().selectedCategory
+    ) as ICategory;
+    const secondaryCategory = new Object(
+      this.resourceForm.getRawValue().selectedSubCategory
+    ) as ICategory;
     const province = new Object(
       this.resourceForm.getRawValue().selectedProvince
     ) as IProvince;
@@ -151,8 +186,8 @@ export class AddServiceComponent implements OnInit {
 
     service.id = "1";
     service.description = description;
-    service.mainCategory = mainCategory;
-    service.secondaryCategory = secondaryCategory;
+    service.mainCategory = mainCategory.id;
+    service.secondaryCategory = secondaryCategory.id;
     service.state = province.nombre;
     service.department = department.nombre;
     service.locality = locality.nombre;

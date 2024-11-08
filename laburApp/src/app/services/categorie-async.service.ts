@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../enviroments/enviroments";
-import { SubCategory } from "../interfaces/subCategory.interface";
-import { Category } from "./service.service";
+import { ISubCategory } from "../interfaces/subCategory.interface";
+import { ICategory } from "../interfaces/category.interface";
 
 @Injectable({
   providedIn: "root",
@@ -12,10 +12,10 @@ export class CategoriesService {
 
   constructor(private http: HttpClient) {}
 
-  getCategories(): Promise<Category[] | any> {
+  getCategories(): Promise<ICategory[] | any> {
     return this.http.get(`${this.apiUrl}/categoria`).toPromise();
   }
-  getSubCategories(id: number): Promise<SubCategory[] | any> {
+  getSubCategories(id: number): Promise<ISubCategory[] | any> {
     return this.http.get(`${this.apiUrl}/subCategoria/${id}`).toPromise();
   }
 }
