@@ -1,17 +1,26 @@
 import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
 import { RouterModule, Routes } from "@angular/router";
-import { AddResourceComponent } from "./components/add-service/add-service.component";
-import { PageNotFoundComponent } from "./components/page-not-found/page-not-found.component";
-import { appRoutes } from "./app.routes";
+import { HomePageComponent } from "./home/home-page/home-page.component";
+import { FormComponent } from "./login/form/form.component";
+import { ServiceListComponent } from "./filter-services/service-list/service-list.component";
+import { BookingFormComponent } from "./filter-services/booking-form/booking-form.component";
+import { InfoComponent } from "./complet_user/info.component";
+import { AddServiceComponent } from "./components/add-service/add-service.component";
+
+const routes: Routes = [
+  { path: "search-professionals", component: ServiceListComponent },
+  { path: "", component: HomePageComponent },
+  { path: "booking-form", component: BookingFormComponent },
+  { path: "complete_user/:id", component: InfoComponent },
+  { path: "addService", component: AddServiceComponent },
+  { path: "login", component: FormComponent },
+  { path: "**", component: HomePageComponent },
+
+  // otras rutas
+];
 
 @NgModule({
-  declarations: [],
-  imports: [
-    RouterModule.forRoot(appRoutes, { enableTracing: true }),
-    CommonModule,
-  ],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
-export { appRoutes };

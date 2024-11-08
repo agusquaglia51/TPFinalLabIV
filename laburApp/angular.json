@@ -5,7 +5,17 @@
   "projects": {
     "laburApp": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "standalone": false
+        },
+        "@schematics/angular:directive": {
+          "standalone": false
+        },
+        "@schematics/angular:pipe": {
+          "standalone": false
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -13,31 +23,48 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/labur-app",
+            "outputPath": "dist/web-app",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
-              "zone.js"
+              "zone.js",
+             
+              "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/app/services",
               {
                 "glob": "**/*",
                 "input": "public"
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/@clr/ui/clr-ui.min.css",
+              "node_modules/@clr/icons/clr-icons.min.css",
+              "node_modules/@cds/core/global.min.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "./node_modules/angular-calendar/css/angular-calendar.css"
+              
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "node_modules/@clr/icons/clr-icons.min.js"
+            ]
+
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "5mb",
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -75,11 +102,14 @@
           "options": {
             "polyfills": [
               "zone.js",
-              "zone.js/testing"
+              "zone.js/testing",
+              "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
+              "src/assets",
               {
+                
                 "glob": "**/*",
                 "input": "public"
               }
@@ -92,5 +122,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

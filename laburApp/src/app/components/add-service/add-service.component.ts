@@ -14,13 +14,13 @@ import { ILocality } from "../../interfaces/locality";
 import { IProvince } from "../../interfaces/province";
 
 @Component({
-  selector: "app-service-resource",
+  selector: "app-add-service",
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: "./add-service.component.html",
   styleUrl: "./add-service.component.css",
 })
-export class AddResourceComponent implements OnInit {
+export class AddServiceComponent implements OnInit {
   provinceList: Array<IProvince> = [];
   departmentList: Array<IDepartment> = [];
   localityList: Array<ILocality> = [];
@@ -38,10 +38,6 @@ export class AddResourceComponent implements OnInit {
   ];
 
   resourceForm = new FormGroup({
-    price: new FormControl("", [
-      Validators.required,
-      Validators.pattern("[0-9]*"),
-    ]),
     description: new FormControl("", [
       Validators.required,
       Validators.maxLength(500),
@@ -62,7 +58,7 @@ export class AddResourceComponent implements OnInit {
       .getAllProvinces()
       .then((response) => {
         this.provinceList = response.provincias;
-        console.log("response.provincias", response.provincias);
+        // console.log("response.provincias", response.provincias);
       })
       .catch((error) => {
         console.log("Ocurrio un error:", JSON.stringify(error));
@@ -74,9 +70,12 @@ export class AddResourceComponent implements OnInit {
     this.locationService
       .getAllDepartmentsByProvince(provinceName)
       .then((response) => {
-        console.log("response.departamentos", response.departamentos);
-        this.departmentList = []; // Limpiar las localidades al cambiar la provincia
+        // console.log("response.departamentos", response.departamentos);
+        this.departmentList = [];
         this.departmentList = response.departamentos;
+      })
+      .catch((error) => {
+        console.log("Ocurrio un error:", JSON.stringify(error));
       });
   }
 
@@ -84,13 +83,17 @@ export class AddResourceComponent implements OnInit {
     this.locationService
       .getAllLocalitiesByDepartments(departmentName)
       .then((response) => {
-        console.log("response.localidades", response.localidades);
-        this.localityList = []; // Limpiar las localidades al cambiar la provincia
+        // console.log("response.localidades", response.localidades);
         this.localityList = response.localidades;
+      })
+      .catch((error) => {
+        console.log("Ocurrio un error:", JSON.stringify(error));
       });
   }
 
   onSelectedProvince() {
+    this.departmentList = []; // Limpia los departamentos al cambiar la provincia
+    this.localityList = []; // Limpia las localidades al cambiar la provincia
     const province = new Object(
       this.resourceForm.getRawValue().selectedProvince
     ) as IProvince;
@@ -98,16 +101,15 @@ export class AddResourceComponent implements OnInit {
   }
 
   onSelectedDepartment() {
+    this.localityList = []; // Limpia las localidades al cambiar el departamento
     const department = new Object(
       this.resourceForm.getRawValue().selectedDepartment
     ) as IDepartment;
-    console.log("estoy entrando", department.nombre);
     this.loadLocalities(department.nombre);
   }
 
   onSubmit() {
     let service = new Service();
-    const price = this.resourceForm.getRawValue().price as string;
     const description = this.resourceForm.getRawValue().description as string;
     const mainCategory = this.resourceForm.getRawValue()
       .selectedCategory as string;
@@ -122,7 +124,7 @@ export class AddResourceComponent implements OnInit {
     const locality = new Object(
       this.resourceForm.getRawValue().selectedLocality
     ) as ILocality;
-    service.price = price;
+
     service.description = description;
     service.mainCategory = mainCategory;
     service.secondaryCategory = secondaryCategory;
