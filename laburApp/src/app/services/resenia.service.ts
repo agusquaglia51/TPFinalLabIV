@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Reseña } from '../interfaces/resenia.interface';
-
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { Reseña } from "../interfaces/resenia.interface";
+import { environment } from "../../enviroments/enviroments";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ReseñasService {
-  private apiUrl = 'http://127.0.0.1:8000/resenas';  // Cambia al endpoint de FastAPI
+  private apiUrl = `${environment.LOCAL_API_URL}/resenas`; // Cambia al endpoint de FastAPI
 
   constructor(private http: HttpClient) {}
 
@@ -19,9 +19,4 @@ export class ReseñasService {
   agregarReseña(reseña: Reseña): Observable<Reseña> {
     return this.http.post<Reseña>(this.apiUrl, reseña);
   }
-
-
 }
-
-
-

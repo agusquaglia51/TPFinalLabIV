@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import {
   FormControl,
   FormGroup,
-  NgModel,
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
@@ -12,6 +11,9 @@ import { CommonModule } from "@angular/common";
 import { IDepartment } from "../../interfaces/department";
 import { ILocality } from "../../interfaces/locality";
 import { IProvince } from "../../interfaces/province";
+import { CategoriesService } from "../../services/categorie-async.service";
+import { ServicesService } from "../../services/service-async.service";
+import { AuthService } from "../../services/auth.services";
 
 @Component({
   selector: "app-add-service",
@@ -51,18 +53,39 @@ export class AddServiceComponent implements OnInit {
     selectedLocality: new FormControl(this.localityList, [Validators.required]),
   });
 
-  constructor(private locationService: LocationAsyncService) {}
+  constructor(
+    private locationService: LocationAsyncService,
+    private categoriesService: CategoriesService,
+    private servicesService: ServicesService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
-    this.locationService
-      .getAllProvinces()
-      .then((response) => {
-        this.provinceList = response.provincias;
-        // console.log("response.provincias", response.provincias);
-      })
-      .catch((error) => {
-        console.log("Ocurrio un error:", JSON.stringify(error));
-      });
+    console.log(
+      "🚀 ~ AddServiceComponent ~ ngOnInit ~ this.authService.isAuthenticated():",
+      this.authService.isAuthenticated()
+    );
+    if (this.authService.isAuthenticated()) {
+      this.locationService
+        .getAllProvinces()
+        .then((response) => {
+          this.provinceList = response.provincias;
+          // console.log("response.provincias", response.provincias);
+        })
+        .catch((error) => {
+          console.log(JSON.stringify(error));
+        });
+      this.categoriesService
+        .getCategories()
+        .then((response) => {
+          this.mainCategoryList = response;
+        })
+        .catch((error) => {
+          console.log(JSON.stringify(error));
+        });
+    } else {
+      window.location.href = "/login";
+    }
   }
 
   // Cuando cambia la provincia seleccionada, cargar departamentos
@@ -75,7 +98,7 @@ export class AddServiceComponent implements OnInit {
         this.departmentList = response.departamentos;
       })
       .catch((error) => {
-        console.log("Ocurrio un error:", JSON.stringify(error));
+        console.log(JSON.stringify(error));
       });
   }
 
@@ -124,14 +147,22 @@ export class AddServiceComponent implements OnInit {
     const locality = new Object(
       this.resourceForm.getRawValue().selectedLocality
     ) as ILocality;
+    const profesionalId = this.authService.getUserId();
 
+    service.id = "1";
     service.description = description;
     service.mainCategory = mainCategory;
     service.secondaryCategory = secondaryCategory;
     service.state = province.nombre;
     service.department = department.nombre;
     service.locality = locality.nombre;
+    service.profesionalId = profesionalId || ""; //aca necesito traerme el id del usuario actual
 
-    console.log("service", service);
+    this.servicesService
+      .addService(service)
+      .then()
+      .catch((error) => {
+        console.log(error);
+      });
   }
 }

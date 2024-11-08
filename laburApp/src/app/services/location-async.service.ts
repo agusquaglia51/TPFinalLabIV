@@ -1,11 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { environment } from "../../enviroments/enviroments";
 
 @Injectable({
   providedIn: "root",
 })
 export class LocationAsyncService {
-  private apiUrl = "https://apis.datos.gob.ar/georef/api";
+  private apiUrl = environment.LOCATION_API_URL;
   constructor(private http: HttpClient) {}
 
   getAllProvinces(): Promise<any> {

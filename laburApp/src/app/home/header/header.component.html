@@ -1,20 +1,28 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <button class="btn-laburapp" (click)="navigateHome()" > LaburApp</button>
+  <button class="btn-laburapp" (click)="navigateHome()">LaburApp</button>
 
   <div class="collapse navbar-collapse justify-content-end">
     <ng-container *ngIf="!isAuthenticated; else loggedIn">
-      <a class="navbar-brand" [routerLink]="['/login']" style="font-size: x-large;">Iniciar Sesión</a>
+      <a
+        class="navbar-brand"
+        [routerLink]="['/login']"
+        style="font-size: x-large"
+        >Iniciar Sesión
+      </a>
     </ng-container>
     <ng-template #loggedIn>
       <div class="container-icon" (click)="navigateToCompleteUser()">
         <button class="btn btn-profile" type="submit">Profile</button>
-    
       </div>
-      
 
       <div class="container-icon" (click)="navigateToProfile()">
         <button class="btn btn-profile" type="submit">Profile</button>
-        <img class="icon-profile" src="../../../assets/images/home/image-user.png" alt="User Icon" style="width: 45px; height: 45px;">
+        <img
+          class="icon-profile"
+          src="../../../assets/images/home/image-user.png"
+          alt="User Icon"
+          style="width: 45px; height: 45px"
+        />
       </div>
     </ng-template>
   </div>

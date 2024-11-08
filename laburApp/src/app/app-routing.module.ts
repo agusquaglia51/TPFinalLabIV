@@ -1,11 +1,11 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { HomePageComponent } from "./home/home-page/home-page.component";
-import { FormComponent } from "./login/form/form.component";
 import { ServiceListComponent } from "./filter-services/service-list/service-list.component";
 import { BookingFormComponent } from "./filter-services/booking-form/booking-form.component";
 import { InfoComponent } from "./complet_user/info.component";
 import { AddServiceComponent } from "./components/add-service/add-service.component";
+import { FormComponent } from "./login/form/form.component";
 
 const routes: Routes = [
   { path: "search-professionals", component: ServiceListComponent },
@@ -15,7 +15,6 @@ const routes: Routes = [
   { path: "addService", component: AddServiceComponent },
   { path: "login", component: FormComponent },
   { path: "**", component: HomePageComponent },
-
   // otras rutas
 ];
 
